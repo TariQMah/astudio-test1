@@ -4,7 +4,7 @@ import { DataContext } from "../contexts/DataContext";
 import axios from "axios";
 import { Cross, CrossIcon, Search, XIcon } from "lucide-react";
 
-const Filters = () => {
+const Filters = ({ children }) => {
   const {
     setData,
     setLoading,
@@ -66,6 +66,8 @@ const Filters = () => {
           </div>
         )}
       </div>
+
+      {children}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { DataContext } from "../contexts/DataContext";
 
 const DataTable = ({ columns }) => {
   const { data, filteredData } = useContext(DataContext);
-  console.log("filteredData: ", filteredData);
+
   const records = filteredData?.length > 0 ? filteredData : data;
 
   return (

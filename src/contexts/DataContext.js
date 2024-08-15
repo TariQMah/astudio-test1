@@ -17,25 +17,35 @@ export const DataProvider = ({ children }) => {
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [filters, setFilters] = useState({});
+
+  const onFilter = (name, value) => {
+    setFilters({
+      [name]: value,
+    });
+  };
+
   const pageRoute = location.pathname === "/products" ? "products" : "users";
 
-  const fetchData = async (filterd, pageSize, searchTerm) => {
+  const fetchData = async (filterd, pageSize, searchTerm, query = null) => {
     setLoading(true);
-    const response = await axios.get(`https://dummyjson.com/${pageRoute}`, {
-      params: {
-        limit: pageSize,
-        select: filterd,
-        searchTerm,
-      },
-    });
-
-    setData(response.data.users);
-    const keys = response.data.users[0];
-    const columns = Object.keys(keys)?.map((item) => camelToTitle(item));
-    setColumns(columns);
-
-    setTotalPages(Math.ceil(response.data.total / pageSize));
-    setLoading(false);
+    try {
+      let url = `https://dummyjson.com/${pageRoute}`;
+      if (query) url = `https://dummyjson.com/${pageRoute}/${query}`;
+      const response = await axios.get(url, {
+        params: {
+          limit: pageSize,
+          select: filterd,
+          searchTerm,
+        },
+      });
+      setData(response?.data);
+      setData(response?.data[pageRoute]);
+      setTotalPages(Math.ceil(response.data.total / pageSize));
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const searchData = useCallback(
@@ -82,6 +92,8 @@ export const DataProvider = ({ children }) => {
         pageRoute,
         fetchData,
         searchTerm,
+        onFilter,
+        filters,
       }}
     >
       {children}

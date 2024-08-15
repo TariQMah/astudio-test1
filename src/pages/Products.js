@@ -5,21 +5,10 @@ import Filters from "../components/Filters";
 import DataTable from "../components/DataTable";
 import Pagination from "../components/Pagination";
 import axios from "axios";
+import ProductFilters from "../components/productFilters";
 
 const Products = () => {
-  const { setData, setLoading, pageSize, pageRoute } = useContext(DataContext);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await axios.get(`https://dummyjson.com/${pageRoute}`, {
-        params: { limit: pageSize },
-      });
-      setData(response.data.products);
-      setLoading(false);
-    };
-    fetchData();
-  }, [setData, setLoading]);
+  const { pageSize, filters, searchTerm, fetchData } = useContext(DataContext);
 
   const columns = useMemo(
     () => [
@@ -35,18 +24,28 @@ const Products = () => {
     ],
     []
   );
+  const filterd = useMemo(
+    () => columns?.map((item) => item.key)?.toString(),
+    []
+  );
 
-  const filters = [
-    { label: "Title", key: "title" },
-    { label: "Brand", key: "brand" },
-    { label: "Category", key: "category" },
-    { label: "Tabs", key: "" },
-  ];
+  useEffect(() => {
+    let categoryFilter = null;
+    if (filters.category) {
+      categoryFilter = `category/${filters.category}`;
+    }
+    if (filters.brand) {
+      categoryFilter = `search?q=${filters.brand}`;
+    }
+    fetchData(filterd, pageSize, searchTerm, categoryFilter);
+  }, [pageSize, filters]);
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
-      <Filters />
+      <Filters>
+        <ProductFilters />
+      </Filters>
       <DataTable columns={columns} />
       <Pagination />
     </div>
