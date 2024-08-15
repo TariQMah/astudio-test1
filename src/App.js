@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { DataProvider } from "./contexts/DataContext";
+import Users from "./pages/Users";
+import Products from "./pages/Products";
+import { Link, useRoutes } from "react-router-dom";
 
 function App() {
+  const routes = [
+    { path: "/products", element: <Products /> },
+    { path: "/users", element: <Users /> },
+    { path: "/", element: <Users /> },
+  ];
+
+  const element = useRoutes(routes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DataProvider>
+      <div>
+        <h1>Task1: (React)</h1>
+        <div className="flex justify-end px-3 gap-5">
+          <Link className="bg-black text-white rounded-sm p-2" to={"users"}>
+            Users
+          </Link>
+          <Link className="bg-black text-white rounded-sm p-2" to={"products"}>
+            Products
+          </Link>
+        </div>
+        {element}
+      </div>
+    </DataProvider>
   );
 }
 
