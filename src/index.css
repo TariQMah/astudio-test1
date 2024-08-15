@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "NeutraText-BookAlt";
+  font-style: normal;
+  font-weight: normal;
+  src: local("NeutraText-BookAlt"),
+    url("../public/fonts/neutra-text-alt-webfont/neutra-text-alt-587261020eccb.woff")
+      format("woff");
+}
+
+@font-face {
+  font-family: "NeutraText-Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("NeutraText-Light"),
+    url("../public/fonts/neutra-text-alt-webfont/neutra-text-light-5872613aeda5b.woff")
+      format("woff");
+}
+
+@font-face {
+  font-family: "NeutraTextTF-Book";
+  font-style: normal;
+  font-weight: normal;
+  src: local("NeutraTextTF-Book"),
+    url("../public/fonts/neutra-text-alt-webfont/neutra-text-tf-5871e0b0704ed.woff")
+      format("woff");
+}
+
+@font-face {
+  font-family: "NeutraText-Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("NeutraText-Bold"),
+    url("../public/fonts/neutra-text-alt-webfont/neutra-text-bold-5871e1605afa2.woff")
+      format("woff");
+}
+
+@font-face {
+  font-family: "NeutraText-BoldItalic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("NeutraText-BoldItalic"),
+    url("../public/fonts/neutra-text-alt-webfont/neutra-text-bold-italic-5872615974382.woff")
+      format("woff");
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",

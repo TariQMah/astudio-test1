@@ -1,73 +1,57 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../contexts/DataContext";
+import { camelToTitle } from "../../utils/index";
 
 const UserFilters = () => {
-  const { setFilters, filters, onFilter, data } = useContext(DataContext);
-  const [users, setUsers] = useState([]);
-  const [eyeColor, setEyeColor] = useState([]);
+  const { filters, onFilter } = useContext(DataContext);
+  const [filterState, setFilterState] = useState({});
 
-  const [bloodGroup, setBloodGroup] = useState([]);
+  const findUnique = (key, data) => {
+    return [...new Set(data.map((user) => user[key]))];
+  };
 
   const getFilters = async () => {
     try {
       const response = await axios.get("https://dummyjson.com/users");
       const data = response?.data?.users;
-      const bloodGroup = [...new Set(data.map((user) => user.bloodGroup))];
-      const users = [...new Set(data.map((user) => user.firstName))];
-      const eyeColor = [...new Set(data.map((user) => user.eyeColor))];
-      setBloodGroup(bloodGroup);
-      setUsers(users);
-      setEyeColor(eyeColor);
+      setFilterState({
+        bloodGroup: findUnique("bloodGroup", data),
+        email: findUnique("email", data),
+        firstName: findUnique("firstName", data),
+        eyeColor: findUnique("eyeColor", data),
+      });
     } catch (error) {}
   };
 
   useEffect(() => {
     getFilters();
   }, []);
-  console.log("filters: ", filters);
 
   return (
-    <div className="flex gap-3 justify-start items-center">
-      <select
-        onChange={(e) => onFilter("firstName", e.target.value)}
-        className=" rounded-sm border h-10 mx-4"
-      >
-        <option value="">Select a category</option>
-        {users.map((cat, index) => (
-          <option key={index} selected={filters?.firstName === cat} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
-
-      <select
-        onChange={(e) => onFilter("bloodGroup", e.target.value)}
-        className=" rounded-sm border h-10 mx-4"
-      >
-        <option value="">Select a category</option>
-        {bloodGroup.map((cat, index) => (
-          <option
-            key={index}
-            selected={filters?.bloodGroup === cat}
-            value={cat}
+    <div className="flex gap-3 font-neutra-book-alt justify-start items-center">
+      {Object.keys(filterState).map((item, i) => {
+        return (
+          <select
+            key={i}
+            onChange={(e) => onFilter(item, e.target.value)}
+            className="font-neutra-book-alt w-4/12 rounded-sm border h-10 mx-4"
           >
-            {cat}
-          </option>
-        ))}
-      </select>
-
-      <select
-        onChange={(e) => onFilter("eyeColor", e.target.value)}
-        className=" rounded-sm border h-10 mx-4"
-      >
-        <option value="">Select a category</option>
-        {eyeColor.map((cat, index) => (
-          <option key={index} selected={filters?.eyeColor === cat} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
+            <option value="">Select an {camelToTitle(item)}</option>
+            {filterState[item].map((name, index) => {
+              return (
+                <option
+                  key={index}
+                  selected={filters[item] === name}
+                  value={name}
+                >
+                  {name}
+                </option>
+              );
+            })}
+          </select>
+        );
+      })}
     </div>
   );
 };

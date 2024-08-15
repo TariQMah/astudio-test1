@@ -1,7 +1,12 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { camelToTitle } from "../utils/index";
 
 export const DataContext = createContext();
 
@@ -19,34 +24,38 @@ export const DataProvider = ({ children }) => {
 
   const [filters, setFilters] = useState({});
 
-  const onFilter = (name, value) => {
-    setFilters({
-      [name]: value,
-    });
-  };
+  const onFilter = useCallback(
+    (name, value) => {
+      setFilters({
+        [name]: value,
+      });
+    },
+    [filters]
+  );
 
   const pageRoute = location.pathname === "/products" ? "products" : "users";
-
-  const fetchData = async (filterd, pageSize, searchTerm, query = null) => {
-    setLoading(true);
-    try {
-      let url = `https://dummyjson.com/${pageRoute}`;
-      if (query) url = `https://dummyjson.com/${pageRoute}/${query}`;
-      const response = await axios.get(url, {
-        params: {
-          limit: pageSize,
-          select: filterd,
-          searchTerm,
-        },
-      });
-      setData(response?.data);
-      setData(response?.data[pageRoute]);
-      setTotalPages(Math.ceil(response.data.total / pageSize));
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = useCallback(
+    async (filterd, pageSize, searchTerm, query = null) => {
+      setLoading(true);
+      try {
+        let url = `https://dummyjson.com/${pageRoute}`;
+        if (query) url = `https://dummyjson.com/${pageRoute}/${query}`;
+        const response = await axios.get(url, {
+          params: {
+            limit: pageSize,
+            select: filterd,
+            searchTerm,
+          },
+        });
+        setData(response?.data[pageRoute]);
+        setTotalPages(Math.ceil(response.data.total / pageSize));
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageRoute, data]
+  );
 
   const searchData = useCallback(
     (term) => {
@@ -94,6 +103,7 @@ export const DataProvider = ({ children }) => {
         searchTerm,
         onFilter,
         filters,
+        setFilters,
       }}
     >
       {children}

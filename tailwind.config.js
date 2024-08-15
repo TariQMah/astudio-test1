@@ -4,7 +4,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        neutra: ['"Neutra Text"', "sans-serif"],
+        neutra: ["NeutraText-Light"],
+        "neutra-book-alt": ["NeutraText-BookAlt"],
+        "neutra-tf-book": ["NeutraTextTF-Book"],
+        "neutra-bold": ["NeutraText-Bold"],
+        "neutra-bold-italic": ["NeutraText-BoldItalic"],
       },
       colors: {
         black: "#322625",

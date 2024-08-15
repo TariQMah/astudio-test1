@@ -6,9 +6,11 @@ import DataTable from "../components/DataTable";
 import Pagination from "../components/Pagination";
 import axios from "axios";
 import ProductFilters from "../components/productFilters";
+import Loading from "../components/Loading";
 
 const Products = () => {
-  const { pageSize, filters, searchTerm, fetchData } = useContext(DataContext);
+  const { pageSize, filters, searchTerm, fetchData, loading } =
+    useContext(DataContext);
 
   const columns = useMemo(
     () => [
@@ -28,21 +30,39 @@ const Products = () => {
     () => columns?.map((item) => item.key)?.toString(),
     []
   );
-
   useEffect(() => {
-    let categoryFilter = null;
-    if (filters.category) {
-      categoryFilter = `category/${filters.category}`;
-    }
-    if (filters.brand) {
-      categoryFilter = `search?q=${filters.brand}`;
-    }
+    const buildFilterQuery = (filters) => {
+      const keys = Object.keys(filters);
+      let filterQuery = "";
+
+      const buildQuery = (index) => {
+        if (index >= keys.length) return;
+
+        const key = keys[index];
+        const value = filters[key];
+
+        if (value && value !== "All") {
+          if (key === "category") {
+            filterQuery += `category/${value}`;
+          } else {
+            filterQuery += `${filterQuery ? "&" : ""}search?q=${value}`;
+          }
+        }
+        buildQuery(index + 1);
+      };
+
+      buildQuery(0);
+      return filterQuery;
+    };
+
+    const categoryFilter = buildFilterQuery(filters);
+
     fetchData(filterd, pageSize, searchTerm, categoryFilter);
   }, [pageSize, filters]);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Products</h1>
+      <h1 className="text-2xl font-bold mb-4 font-neutra-bold">Products</h1>
       <Filters>
         <ProductFilters />
       </Filters>

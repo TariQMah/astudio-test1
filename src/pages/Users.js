@@ -6,7 +6,8 @@ import Pagination from "../components/Pagination";
 import UserFilters from "../components/userFilters";
 
 const Users = () => {
-  const { fetchData, pageSize, searchTerm, filters } = useContext(DataContext);
+  const { fetchData, pageSize, searchTerm, filters, pageRoute } =
+    useContext(DataContext);
 
   const columns = useMemo(
     () => [
@@ -25,7 +26,7 @@ const Users = () => {
 
   const filterd = useMemo(
     () => columns?.map((item) => item.key).toString(),
-    [columns]
+    [columns, pageRoute]
   );
   useEffect(() => {
     let categoryFilter = null;
@@ -42,10 +43,9 @@ const Users = () => {
     }
     fetchData(filterd, pageSize, searchTerm, categoryFilter);
   }, [pageSize, filters]);
-
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Users</h1>
+      <h1 className="text-2xl font-bold mb-4 font-neutra-bold">Users</h1>
       <Filters>
         <UserFilters />
       </Filters>
